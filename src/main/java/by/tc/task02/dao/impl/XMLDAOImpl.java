@@ -6,9 +6,10 @@ import by.tc.task02.entity.XMLObject;
 import by.tc.task02.dao.tags.Tag;
 import by.tc.task02.dao.tags.TagManager;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,14 +72,15 @@ public class XMLDAOImpl implements XMLDAO {
 
 
     private void readXMLFile() throws DAOException {
-        String relativePath = "\\example.xml";
-        try (BufferedReader bfr = new BufferedReader(new FileReader(relativePath))) {
+        try(InputStream fis = XMLDAOImpl.class.getClassLoader().getResourceAsStream("example.xml");
+            BufferedReader bfr = new BufferedReader(new InputStreamReader(fis))){
             String readed = "";
             while ((readed = bfr.readLine()) != null) {
                 fileXMLList.add(readed);
             }
-        } catch (IOException e) {
+        } catch (IOException e){
             throw new DAOException(e.getMessage());
         }
+
     }
 }
