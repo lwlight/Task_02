@@ -18,8 +18,8 @@ public class XMLObject implements Serializable {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("Name: " + this.name + " ");
-        result.append("Characters: " + this.characters + " ");
+        result.append("Name: " + this.name + "\t");
+        result.append("Characters: " + this.characters);
         return result.toString();
     }
 

@@ -1,15 +1,12 @@
 package by.tc.task02.dao.impl;
 
 import by.tc.task02.dao.XMLDAO;
-import by.tc.task02.dao.exceptiondao.DAOException;
+import by.tc.task02.dao.exception.DAOException;
 import by.tc.task02.entity.XMLObject;
 import by.tc.task02.dao.tags.Tag;
 import by.tc.task02.dao.tags.TagManager;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +56,6 @@ public class XMLDAOImpl implements XMLDAO {
                 if (tag.isCloseTagAtThisLine() && nextTag != null && !nextTag.isOpen()) {
                     incapsulationLvl--;
                 }
-
             }
             if (tagManager.checkNextTag() != null) {
                 recursiveBuild(tagManager);
@@ -81,6 +77,5 @@ public class XMLDAOImpl implements XMLDAO {
         } catch (IOException e){
             throw new DAOException(e.getMessage());
         }
-
     }
 }

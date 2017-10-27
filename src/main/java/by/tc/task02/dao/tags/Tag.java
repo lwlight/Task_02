@@ -7,12 +7,9 @@ public class Tag {
     private String fullTagName;
     private String tagName;
     private String characters;
-
     private boolean closeTagAtThisLine;
     private Map<String, String> attributes = new HashMap<>();
 
-    public Tag(){
-    }
 
     public Tag(String fullTagName, boolean hasCloseTagAtThisLine, String characters) {
         this.fullTagName = fullTagName;
@@ -23,20 +20,6 @@ public class Tag {
     public Tag(String fullTagName, boolean hasCloseTagAtThisLine) {
         this.fullTagName = fullTagName;
         this.closeTagAtThisLine = hasCloseTagAtThisLine;
-    }
-
-
-    public boolean isNextTegCloseThisOne(Tag nextTag){
-        if (nextTag == null){
-            return false;
-        }
-        StringBuilder closeTagName = new StringBuilder(fullTagName);
-        closeTagName.insert(1, "/");
-        if (closeTagName.toString().equals(nextTag)){
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public boolean isOpen(){
@@ -66,6 +49,10 @@ public class Tag {
     public String toString() {
         return this.fullTagName;
     }
+
+
+
+
 
     public String getFullTagName() {
         return fullTagName;

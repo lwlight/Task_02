@@ -3,7 +3,7 @@ package by.tc.task02.main;
 import by.tc.task02.entity.XMLObject;
 import by.tc.task02.service.ServiceFactory;
 import by.tc.task02.service.XMLService;
-import by.tc.task02.service.exceptionservice.ServiceException;
+import by.tc.task02.service.exceptions.ServiceException;
 
 public class Main {
     public static void main(String[] args) {

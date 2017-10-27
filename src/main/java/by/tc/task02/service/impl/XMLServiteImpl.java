@@ -2,10 +2,10 @@ package by.tc.task02.service.impl;
 
 import by.tc.task02.dao.DAOFactory;
 import by.tc.task02.dao.XMLDAO;
-import by.tc.task02.dao.exceptiondao.DAOException;
+import by.tc.task02.dao.exception.DAOException;
 import by.tc.task02.entity.XMLObject;
 import by.tc.task02.service.XMLService;
-import by.tc.task02.service.exceptionservice.ServiceException;
+import by.tc.task02.service.exceptions.ServiceException;
 
 public class XMLServiteImpl implements XMLService{
 

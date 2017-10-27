@@ -41,6 +41,11 @@ public class TagManager {
         }
     }
 
+    public Tag checkNextTag() {
+        int nextLineNumber = currentLineNumber;
+        return recursiveCheckNextTag(nextLineNumber);
+    }
+
     private String parseCharacters(boolean hasCloseTagOnThisLine){
         if (hasCloseTagOnThisLine){
             String currentLine = fileXMLList.get(currentLineNumber);
@@ -91,11 +96,6 @@ public class TagManager {
             return false;
         }
 
-    }
-
-    public Tag checkNextTag() {
-        int nextLineNumber = currentLineNumber;
-        return recursiveCheckNextTag(nextLineNumber);
     }
 
     private Tag recursiveCheckNextTag(int nextLineNumber){

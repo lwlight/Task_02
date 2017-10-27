@@ -1,4 +1,4 @@
-package by.tc.task02.dao.exceptiondao;
+package by.tc.task02.dao.exception;
 
 public class DAOException extends Exception {
     public DAOException(){

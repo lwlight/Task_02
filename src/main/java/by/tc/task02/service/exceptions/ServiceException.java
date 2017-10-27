@@ -1,4 +1,4 @@
-package by.tc.task02.service.exceptionservice;
+package by.tc.task02.service.exceptions;
 
 public class ServiceException extends Exception {
     public ServiceException(){
