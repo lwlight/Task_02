@@ -26,13 +26,14 @@ public class TagManager {
         }
         if (currentLine.contains("<")){
             tag = buildTag(currentLine);
-            if (currentLineNumber < fileXMLList.size()-1){
+
+            if (listNotOver()){
                 currentLineNumber++;
             }
             return tag;
 
         } else {
-            if (currentLineNumber < fileXMLList.size()-1){
+            if (listNotOver()){
                 currentLineNumber++;
                 return getNext();
             } else {
@@ -44,6 +45,24 @@ public class TagManager {
     public Tag checkNextTag() {
         int nextLineNumber = currentLineNumber;
         return recursiveCheckNextTag(nextLineNumber);
+    }
+
+    private Tag recursiveCheckNextTag(int nextLineNumber){
+        final int END_OF_LIST = fileXMLList.size()-1;
+        if (nextLineNumber == END_OF_LIST){
+            return null;
+        }
+        String currentLine = fileXMLList.get(nextLineNumber);
+        if (currentLine.contains("<")){
+            return buildTag(currentLine);
+        } else {
+            if (nextLineNumber < END_OF_LIST){
+                nextLineNumber++;
+                return recursiveCheckNextTag(nextLineNumber);
+            } else {
+                return null;
+            }
+        }
     }
 
     private String parseCharacters(boolean hasCloseTagOnThisLine){
@@ -64,7 +83,7 @@ public class TagManager {
             if (nextTag != null && !nextTag.isOpen()){
                 String holeLine = fileXMLList.get(currentLineNumber);
                 int readedLineNumber = currentLineNumber+1;
-                while (readedLineNumber < fileXMLList.size()-1){
+                while (listNotOver()){
                     holeLine = holeLine.replace("\n", "");
                     holeLine += fileXMLList.get(readedLineNumber);
                     if (holeLine.contains("</")){
@@ -111,27 +130,8 @@ public class TagManager {
 
     }
 
-    private Tag recursiveCheckNextTag(int nextLineNumber){
-        if (nextLineNumber == fileXMLList.size()-1){
-            return null;
-        }
-        String currentLine = fileXMLList.get(nextLineNumber);
-        if (currentLine.contains("<")){
-            Tag tag;
-            int startIndex = currentLine.indexOf("<");
-            int lastIndex = currentLine.indexOf(">");
-            String tagName = currentLine.substring(startIndex, lastIndex+1);
-            boolean hasCloseTagOnThisLine = hasCloseTagOnThisLine(currentLine, tagName);
-            tag = new Tag(tagName, hasCloseTagOnThisLine);
-            return tag;
-        } else {
-            if (nextLineNumber < fileXMLList.size()-1){
-                nextLineNumber++;
-                return recursiveCheckNextTag(nextLineNumber);
-            } else {
-                return null;
-            }
-        }
+    private boolean listNotOver(){
+        return (currentLineNumber < fileXMLList.size()-1);
     }
 }
 
