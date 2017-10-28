@@ -1,10 +1,7 @@
 package by.tc.task02.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class XMLObject implements Serializable {
     private String name;

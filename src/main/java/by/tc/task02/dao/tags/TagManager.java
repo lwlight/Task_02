@@ -17,6 +17,12 @@ public class TagManager {
             return null;
         }
         String currentLine = fileXMLList.get(currentLineNumber);
+        if (currentLine.startsWith("<?")){
+            if (currentLineNumber < fileXMLList.size()-1){
+                currentLineNumber++;
+            }
+            return getNext();
+        }
         if (currentLine.contains("<")){
             int startIndex = currentLine.indexOf("<");
             int lastIndex = currentLine.indexOf(">");

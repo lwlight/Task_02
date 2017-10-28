@@ -36,9 +36,14 @@ public class Tag {
         } else {
             this.tagName = fullTagName.substring(1, fullTagName.indexOf(" "));
             String attributesLine = fullTagName.substring(fullTagName.indexOf(" ")+1, fullTagName.length()-1);
+
+            attributesLine = attributesLine.replace(" ", "");
             attributesLine = attributesLine.replace("\"", "");
             attributesLine = attributesLine.replace(",", "=");
+
+
             String[] attributesArr = attributesLine.split("=");
+
             for (int i=0; i<attributesArr.length-1; i+=2){
                 attributes.put(attributesArr[i], attributesArr[i+1]);
             }

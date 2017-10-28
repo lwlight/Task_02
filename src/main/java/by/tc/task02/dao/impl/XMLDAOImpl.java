@@ -73,7 +73,7 @@ public class XMLDAOImpl implements XMLDAO {
         tag.parseTagNameAndAttributes();
         XMLObject xmlObject = new XMLObject();
         xmlObject.setAttributes(tag.getAttributes());
-        xmlObject.setName(tag.getTagName());
+        xmlObject.setName(tag.getFullTagName());
         xmlObject.setCharacters(tag.getCharacters());
         return xmlObject;
     }
