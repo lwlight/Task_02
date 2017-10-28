@@ -25,7 +25,6 @@ public class XMLDAOImpl implements XMLDAO {
     public XMLObject buildXMLObject() throws DAOException{
         readXMLFile();
         TagManager tagManager = new TagManager(fileXMLList);
-
         return recursiveBuild(tagManager);
     }
 
@@ -39,7 +38,6 @@ public class XMLDAOImpl implements XMLDAO {
         if (tag.isOpen()) {
             XMLObject xmlObject = initializeXMLObject(tag);
             Tag nextTag = tagManager.checkNextTag();
-
             boolean isParent = !tag.isCloseTagAtThisLine() && nextTag != null && nextTag.isOpen();
 
             if (isParent) {
@@ -53,13 +51,11 @@ public class XMLDAOImpl implements XMLDAO {
                 if (haveNoChildObjects) {
                     levelOfNesting--;
                 }
-
             }
 
             if (nextTag != null) {
                 recursiveBuild(tagManager);
             }
-
             return xmlObject;
 
         } else {
