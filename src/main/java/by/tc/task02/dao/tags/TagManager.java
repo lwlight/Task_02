@@ -6,20 +6,29 @@ public class TagManager {
     private List<String> fileXMLList;
     private Tag tag;
     private int currentLineNumber = 0;
+    private final int END_OF_LIST;
 
     public TagManager(List<String> fileXMLList) {
         this.fileXMLList = fileXMLList;
+        if (this.fileXMLList != null) {
+            this.END_OF_LIST = fileXMLList.size() - 1;
+        } else {
+            END_OF_LIST = 0;
+        }
     }
 
 
     public Tag getNext(){
-        if (currentLineNumber == fileXMLList.size()-1){
+        if (fileXMLList == null){
+            return null;
+        }
+        if (currentLineNumber == END_OF_LIST){
             return null;
         }
         String currentLine = fileXMLList.get(currentLineNumber);
 
         if (currentLine.startsWith("<?")){
-            if (currentLineNumber < fileXMLList.size()-1){
+            if (currentLineNumber < END_OF_LIST){
                 currentLineNumber++;
             }
             return getNext();
@@ -27,13 +36,13 @@ public class TagManager {
         if (currentLine.contains("<")){
             tag = buildTag(currentLine);
 
-            if (listNotOver()){
+            if (currentLineNumber < END_OF_LIST){
                 currentLineNumber++;
             }
             return tag;
 
         } else {
-            if (listNotOver()){
+            if (currentLineNumber < END_OF_LIST){
                 currentLineNumber++;
                 return getNext();
             } else {
@@ -43,12 +52,14 @@ public class TagManager {
     }
 
     public Tag checkNextTag() {
+        if (fileXMLList == null){
+            return null;
+        }
         int nextLineNumber = currentLineNumber;
         return recursiveCheckNextTag(nextLineNumber);
     }
 
     private Tag recursiveCheckNextTag(int nextLineNumber){
-        final int END_OF_LIST = fileXMLList.size()-1;
         if (nextLineNumber == END_OF_LIST){
             return null;
         }
@@ -83,7 +94,7 @@ public class TagManager {
             if (nextTag != null && !nextTag.isOpen()){
                 String holeLine = fileXMLList.get(currentLineNumber);
                 int readedLineNumber = currentLineNumber+1;
-                while (listNotOver()){
+                while (currentLineNumber < END_OF_LIST){
                     holeLine = holeLine.replace("\n", "");
                     holeLine += fileXMLList.get(readedLineNumber);
                     if (holeLine.contains("</")){
@@ -128,10 +139,6 @@ public class TagManager {
             return false;
         }
 
-    }
-
-    private boolean listNotOver(){
-        return (currentLineNumber < fileXMLList.size()-1);
     }
 }
 
