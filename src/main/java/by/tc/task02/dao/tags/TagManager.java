@@ -22,32 +22,25 @@ public class TagManager {
         if (fileXMLList == null){
             return null;
         }
-        if (currentLineNumber == END_OF_LIST){
+
+        if (currentLineNumber >= END_OF_LIST){
             return null;
         }
-        String currentLine = fileXMLList.get(currentLineNumber);
 
+        String currentLine = fileXMLList.get(currentLineNumber);
         if (currentLine.startsWith("<?")){
-            if (currentLineNumber < END_OF_LIST){
-                currentLineNumber++;
-            }
+            currentLineNumber++;
             return getNext();
         }
+
         if (currentLine.contains("<")){
             tag = buildTag(currentLine);
-
-            if (currentLineNumber < END_OF_LIST){
-                currentLineNumber++;
-            }
+            currentLineNumber++;
             return tag;
 
         } else {
-            if (currentLineNumber < END_OF_LIST){
-                currentLineNumber++;
-                return getNext();
-            } else {
-                return null;
-            }
+            currentLineNumber++;
+            return getNext();
         }
     }
 
@@ -60,56 +53,49 @@ public class TagManager {
     }
 
     private Tag recursiveCheckNextTag(int nextLineNumber){
-        if (nextLineNumber == END_OF_LIST){
+        if (nextLineNumber >= END_OF_LIST){
             return null;
         }
         String currentLine = fileXMLList.get(nextLineNumber);
         if (currentLine.contains("<")){
             return buildTag(currentLine);
         } else {
-            if (nextLineNumber < END_OF_LIST){
-                nextLineNumber++;
-                return recursiveCheckNextTag(nextLineNumber);
-            } else {
-                return null;
-            }
+            nextLineNumber++;
+            return recursiveCheckNextTag(nextLineNumber);
         }
     }
 
     private String parseCharacters(boolean hasCloseTagOnThisLine){
         if (hasCloseTagOnThisLine){
-            String currentLine = fileXMLList.get(currentLineNumber);
-            int startIndex = currentLine.indexOf(">")+1;
-            int lastIndex = currentLine.indexOf("</");
+            String charactersLine = fileXMLList.get(currentLineNumber);
+            int startIndex = charactersLine.indexOf(">")+1;
+            int lastIndex = charactersLine.indexOf("</");
             if (startIndex >= lastIndex){
                 return null;
             } else {
-                return currentLine.substring(startIndex, lastIndex);
+                return charactersLine.substring(startIndex, lastIndex);
             }
         } else {
-            String currentLine = fileXMLList.get(currentLineNumber);
-            currentLineNumber++;
-            Tag nextTag = checkNextTag();
-            currentLineNumber--;
+            Tag nextTag = checkTagAboveNext();
+
             if (nextTag != null && !nextTag.isOpen()){
-                String holeLine = fileXMLList.get(currentLineNumber);
+                String charactersLine = fileXMLList.get(currentLineNumber);
                 int readedLineNumber = currentLineNumber+1;
-                while (currentLineNumber < END_OF_LIST){
-                    holeLine = holeLine.replace("\n", "");
-                    holeLine += fileXMLList.get(readedLineNumber);
-                    if (holeLine.contains("</")){
+                while (readedLineNumber < END_OF_LIST){
+                    charactersLine += (fileXMLList.get(readedLineNumber)).trim();
+                    charactersLine = charactersLine.replace("\n", " ");
+                    if (charactersLine.contains("</")){
                         break;
                     }
                     readedLineNumber++;
                 }
-                holeLine = holeLine.replace("\n", " ");
-                int startIndex = holeLine.indexOf(">")+1;
-                int lastIndex = holeLine.indexOf("</");
+                int startIndex = charactersLine.indexOf(">")+1;
+                int lastIndex = charactersLine.indexOf("</");
                 if (startIndex >= lastIndex){
                     return null;
                 } else {
-                    holeLine = holeLine.substring(startIndex, lastIndex);
-                    return holeLine.trim();
+                    charactersLine = charactersLine.substring(startIndex, lastIndex);
+                    return charactersLine.trim();
                 }
             } else {
                 return null;
@@ -128,6 +114,13 @@ public class TagManager {
             tag.setCharacters(characters);
         }
         return tag;
+    }
+
+    private Tag checkTagAboveNext(){
+        currentLineNumber++;
+        Tag tagAboveNext = checkNextTag();
+        currentLineNumber--;
+        return tagAboveNext;
     }
 
     private boolean hasCloseTagOnThisLine(String currentLine, String tagName){
