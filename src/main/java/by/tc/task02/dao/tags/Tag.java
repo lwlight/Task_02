@@ -10,13 +10,6 @@ public class Tag {
     private boolean closeTagAtThisLine;
     private Map<String, String> attributes = new HashMap<>();
 
-
-    public Tag(String fullTagName, boolean hasCloseTagAtThisLine, String characters) {
-        this.fullTagName = fullTagName;
-        this.closeTagAtThisLine = hasCloseTagAtThisLine;
-        this.characters = characters;
-    }
-
     public Tag(String fullTagName, boolean hasCloseTagAtThisLine) {
         this.fullTagName = fullTagName;
         this.closeTagAtThisLine = hasCloseTagAtThisLine;
@@ -40,7 +33,6 @@ public class Tag {
             attributesLine = attributesLine.replace(" ", "");
             attributesLine = attributesLine.replace("\"", "");
             attributesLine = attributesLine.replace(",", "=");
-
 
             String[] attributesArr = attributesLine.split("=");
 

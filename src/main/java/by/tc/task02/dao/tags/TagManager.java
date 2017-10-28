@@ -17,6 +17,7 @@ public class TagManager {
             return null;
         }
         String currentLine = fileXMLList.get(currentLineNumber);
+
         if (currentLine.startsWith("<?")){
             if (currentLineNumber < fileXMLList.size()-1){
                 currentLineNumber++;
@@ -24,19 +25,12 @@ public class TagManager {
             return getNext();
         }
         if (currentLine.contains("<")){
-            int startIndex = currentLine.indexOf("<");
-            int lastIndex = currentLine.indexOf(">");
-            String tagName = currentLine.substring(startIndex, lastIndex+1);
-            boolean hasCloseTagOnThisLine = hasCloseTagOnThisLine(currentLine, tagName);
-            tag = new Tag(tagName, hasCloseTagOnThisLine);
-            if (tag.isOpen()){
-                String characters = parseCharacters(hasCloseTagOnThisLine);
-                tag.setCharacters(characters);
-            }
+            tag = buildTag(currentLine);
             if (currentLineNumber < fileXMLList.size()-1){
                 currentLineNumber++;
             }
             return tag;
+
         } else {
             if (currentLineNumber < fileXMLList.size()-1){
                 currentLineNumber++;
@@ -91,6 +85,19 @@ public class TagManager {
                 return null;
             }
         }
+    }
+
+    private Tag buildTag(String currentLine){
+        int startIndex = currentLine.indexOf("<");
+        int lastIndex = currentLine.indexOf(">");
+        String tagName = currentLine.substring(startIndex, lastIndex+1);
+        boolean hasCloseTagOnThisLine = hasCloseTagOnThisLine(currentLine, tagName);
+        Tag tag = new Tag(tagName, hasCloseTagOnThisLine);
+        if (tag.isOpen()){
+            String characters = parseCharacters(hasCloseTagOnThisLine);
+            tag.setCharacters(characters);
+        }
+        return tag;
     }
 
     private boolean hasCloseTagOnThisLine(String currentLine, String tagName){
