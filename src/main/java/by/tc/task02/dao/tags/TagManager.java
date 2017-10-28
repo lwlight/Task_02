@@ -49,10 +49,10 @@ public class TagManager {
             return null;
         }
         int nextLineNumber = currentLineNumber;
-        return recursiveCheckNextTag(nextLineNumber);
+        return recursiveCheckForNextTag(nextLineNumber);
     }
 
-    private Tag recursiveCheckNextTag(int nextLineNumber){
+    private Tag recursiveCheckForNextTag(int nextLineNumber){
         if (nextLineNumber >= END_OF_LIST){
             return null;
         }
@@ -61,7 +61,7 @@ public class TagManager {
             return buildTag(currentLine);
         } else {
             nextLineNumber++;
-            return recursiveCheckNextTag(nextLineNumber);
+            return recursiveCheckForNextTag(nextLineNumber);
         }
     }
 
@@ -76,7 +76,7 @@ public class TagManager {
                 return charactersLine.substring(startIndex, lastIndex);
             }
         } else {
-            Tag nextTag = checkTagAboveNext();
+            Tag nextTag = checkTagBeyondNext();
 
             if (nextTag != null && !nextTag.isOpen()){
                 String charactersLine = fileXMLList.get(currentLineNumber);
@@ -97,6 +97,7 @@ public class TagManager {
                     charactersLine = charactersLine.substring(startIndex, lastIndex);
                     return charactersLine.trim();
                 }
+
             } else {
                 return null;
             }
@@ -116,11 +117,11 @@ public class TagManager {
         return tag;
     }
 
-    private Tag checkTagAboveNext(){
+    private Tag checkTagBeyondNext(){
         currentLineNumber++;
-        Tag tagAboveNext = checkNextTag();
+        Tag tagBeyondNext = checkNextTag();
         currentLineNumber--;
-        return tagAboveNext;
+        return tagBeyondNext;
     }
 
     private boolean hasCloseTagOnThisLine(String currentLine, String tagName){
@@ -131,7 +132,6 @@ public class TagManager {
         } else {
             return false;
         }
-
     }
 }
 
