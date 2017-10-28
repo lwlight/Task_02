@@ -16,7 +16,7 @@ import java.util.Map;
 public class XMLDAOImpl implements XMLDAO {
 
     private List<String> fileXMLList = new ArrayList<>();
-    private static int incapsulationLvl = 0;
+    private static int levelOfNesting = 0;
     private static Map<Integer, XMLObject> parentMap = new HashMap<>();
     static {
         parentMap.put(0, null);
@@ -37,35 +37,50 @@ public class XMLDAOImpl implements XMLDAO {
         }
 
         if (tag.isOpen()) {
-            XMLObject xmlObject = new XMLObject();
-            tag.parseTagNameAndAttributes();
-            xmlObject.setAttributes(tag.getAttributes());
-            xmlObject.setName(tag.getTagName());
-            xmlObject.setCharacters(tag.getCharacters());
-
+            XMLObject xmlObject = initializeXMLObject(tag);
             Tag nextTag = tagManager.checkNextTag();
 
-            if (!tag.isCloseTagAtThisLine() && nextTag != null && nextTag.isOpen()) {
-                incapsulationLvl++;
-                parentMap.put(incapsulationLvl,xmlObject);
-                if (parentMap.get(incapsulationLvl - 1) != null) {
-                    parentMap.get(incapsulationLvl - 1).getChildXMLObjects().add(xmlObject);
-                }
+            boolean isParent = !tag.isCloseTagAtThisLine() && nextTag != null && nextTag.isOpen();
+
+            if (isParent) {
+                addAsChildToParent(xmlObject);
+                levelOfNesting++;
+                parentMap.put(levelOfNesting,xmlObject);
             } else {
-                parentMap.get(incapsulationLvl).getChildXMLObjects().add(xmlObject);
-                if (tag.isCloseTagAtThisLine() && nextTag != null && !nextTag.isOpen()) {
-                    incapsulationLvl--;
+                addAsChildToParent(xmlObject);
+                boolean haveNoChildObjects = tag.isCloseTagAtThisLine() && nextTag != null && !nextTag.isOpen();
+
+                if (haveNoChildObjects) {
+                    levelOfNesting--;
                 }
+
             }
-            if (tagManager.checkNextTag() != null) {
+
+            if (nextTag != null) {
                 recursiveBuild(tagManager);
             }
+
             return xmlObject;
+
         } else {
             return recursiveBuild(tagManager);
         }
     }
 
+    private void addAsChildToParent(XMLObject childCandidate){
+        if (parentMap.get(levelOfNesting) != null) {
+            parentMap.get(levelOfNesting).getChildXMLObjects().add(childCandidate);
+        }
+    }
+
+    private XMLObject initializeXMLObject(Tag tag){
+        tag.parseTagNameAndAttributes();
+        XMLObject xmlObject = new XMLObject();
+        xmlObject.setAttributes(tag.getAttributes());
+        xmlObject.setName(tag.getTagName());
+        xmlObject.setCharacters(tag.getCharacters());
+        return xmlObject;
+    }
 
     private void readXMLFile() throws DAOException {
         try(InputStream fis = XMLDAOImpl.class.getClassLoader().getResourceAsStream("example.xml");
